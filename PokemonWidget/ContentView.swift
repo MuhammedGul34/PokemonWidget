@@ -6,16 +6,32 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 struct ContentView: View {
+    
+    @AppStorage("pokemon", store: UserDefaults(suiteName: "group.com.muhammedgul.PokemonWidget"))
+    
+    var pokemonData : Data = Data()
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            ForEach(pokemonDizisi) { pokemon in PokemonView(pokemon: pokemon).onTapGesture {
+                userDefaultsKaydet(pokemon: pokemon)
+            }
+            }
         }
-        .padding()
+    }
+    
+    func userDefaultsKaydet(pokemon: Pokemon){
+        
+        if let pokemonData = try? JSONEncoder().encode(pokemon) {
+            self.pokemonData = pokemonData
+            print(pokemon.isim)
+            WidgetCenter.shared.reloadTimelines(ofKind: "WidgetPokemon")
+        }
+        
+       
     }
 }
 
